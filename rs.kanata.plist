@@ -7,7 +7,7 @@
         <key>PATH</key>
         <string>/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin</string>
         <key>SHELL</key>
-        <string>/usr/local/bin/dash</string>
+        <string>/opt/local/bin/bash</string>
     </dict>
     <key>Label</key>
     <string>rs.kanata</string>

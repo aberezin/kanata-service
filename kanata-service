@@ -10,10 +10,10 @@ stdout_log="/private/tmp/$service_name.out.log" && touch $stdout_log
 
 kanata_sudoers='/private/etc/sudoers.d/kanata'
 is_service_installed=$([[ -f $service_plist && -f $kanata_sudoers ]] &> /dev/null; echo $?)
-is_bootstrapped=$(launchctl print $service_target &> /dev/null; echo $?)
+is_bootstrapped=$(launchctl print "$service_target" &> /dev/null; echo $?)
 
 function install {
-  if [[ is_service_installed -eq 0 ]] then
+  if [[ is_service_installed -eq 0 ]]; then
     echo "Kanata service is already installed."
   else
       # rs.kanata.plist launchd config
@@ -37,15 +37,15 @@ clear-logs () {
 }
 
 function start {
-  if [[ $is_service_installed -ne 0 ]] then
+  if [[ $is_service_installed -ne 0 ]]; then
     echo "Service isn't installed."
   else
     clear-logs
-    if [[ is_bootstrapped -eq 0 ]] then
-      launchctl kickstart $service_target
+    if [[ is_bootstrapped -eq 0 ]]; then
+      launchctl kickstart "$service_target"
     else
-      launchctl enable $service_target
-      launchctl bootstrap gui/$uid $service_plist && echo "Kanata service starting..."
+      launchctl enable "$service_target"
+      launchctl bootstrap gui/"$uid" "$service_plist" && echo "Kanata service starting..."
       sleep 2
       echo "Started."
     fi
@@ -53,7 +53,7 @@ function start {
 }
 
 function stop {
-  if [[ is_service_installed -ne 0 ]] then
+  if [[ is_service_installed -ne 0 ]]; then
     echo "Service isn't installed."
   else
     if [[ is_bootstrapped -eq 0 ]] then
@@ -99,12 +99,12 @@ function info {
 }
 
 function uninstall {
-  if [[ $is_service_installed -ne 0 ]] then
+  if [[ $is_service_installed -ne 0 ]]; then
     echo "Service isn't installed."
   else
     stop
     echo "Deleting..."
-    sudo rm -vf $service_plist
+    sudo rm -vf "$service_plist"
     sudo rm -vf $kanata_sudoers
     clear-logs
     printf "\n"
@@ -141,8 +141,8 @@ main () {
       [[ "$1" != "install" ]] && $1 || invalid-syntax ;;
     3)
       if [[ "$1" == "install" ]]; then
-        kanata_binary=$(realpath $2)
-        kanata_config=$(realpath $3)
+        kanata_binary=$(realpath "$2")
+        kanata_config=$(realpath "$3")
         $1
       else
         invalid-syntax
